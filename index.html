@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --ours-color: #e11d48;
+            --text-main: #1f2937;
+            --text-secondary: #64748b;
+            --bg-color: #ffffff;
+            --bg-alt: #f8fafc;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin: 0;
+            background-color: var(--bg-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .authors {
+            font-size: 1.3rem; /* 稍微大一点 */
+            color: var(--text-main); /* 颜色加深 */
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .authors a {
+            color: var(--text-main);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .authors a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* 新增机构样式 */
+        .affiliations {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-top: 10px;
+        }
+        
+        /* 移除原本的 .blind-review-tag 样式，或者直接删掉它 */
+
+        /* --- Section Styling --- */
+        section { padding: 60px 0; }
+        #abstract { background: #f8fafc; }
+        #comparisons { background: #f8fafc; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        #more-results { background: #fff; }
+
+        /* 新增 Method 样式 */
+        #method {
+            background-color: #fff; /* 灰色背景 */
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .method-container {
+            text-align: center;
+            max-width: 1000px; /* 限制内容最大宽度，防止太宽 */
+            margin: 0 auto;
+        }
+
+        .method-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 25px;
+            background-color: #fff; /* 如果图片是透明底，加个白底 */
+        }
+
+        .method-caption {
+            text-align: justify; /* 两端对齐，像论文一样 */
+            font-size: 1.05rem;
+            color: #475569;
+            line-height: 1.7;
+        }
+
+        .method-caption b {
+            color: #1e293b; /* 强调文字加深 */
+        }
+
+        /* --- Mixed Layout (Left Vertical, Right Horizontal + Text) --- */
+        
+        .mixed-layout {
+            display: flex;
+            gap: 40px;              /* 左右大栏之间的间距 */
+            width: 100%;
+            align-items: stretch;   /* 让左右两栏高度尽量拉伸一致 */
+        }
+
+        /* --- 左栏样式 --- */
+        .layout-col-left {
+            flex: 0 0 35%;          /* 左栏宽度占比，根据竖图胖瘦微调 (35% - 40% 之间) */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-wrapper-vertical {
+            width: 100%;
+            height: 100%;           /* 撑满高度 */
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            line-height: 0;
+            display: flex;          /* 确保内部图片对齐 */
+        }
+
+        .img-wrapper-vertical img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;    /* 保持比例，如果想强制填满不留白可用 cover */
+            display: block;
+        }
+
+        /* --- 右栏样式 --- */
+        .layout-col-right {
+            flex: 1;                /* 占满剩余宽度 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;              /* 右上图片和右下文字之间的间距 */
+        }
+
+        .img-wrapper-horizontal {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .img-wrapper-horizontal img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- 右下角文字区域 (改为上下堆叠) --- */
+        .caption-row {
+            display: flex;
+            flex-direction: column; /* 【关键修改】改为垂直排列 */
+            gap: 20px;              /* 上下两段文字之间的间距 */
+            margin-top: 10px;       /* 稍微增加一点与上方横图的距离 */
+        }
+
+        .caption-item {
+            width: 100%;            /* 占满宽度 */
+        }
+
+        .caption-item h3 {
+            font-size: 1.15rem;
+            margin-top: 0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #334155;
+        }
+
+        /* 保持之前的蓝条装饰 */
+        .caption-item h3::before {
+            content: ''; 
+            display: block; 
+            width: 4px; 
+            height: 18px; 
+            background: var(--primary-color); 
+            border-radius: 2px;
+        }
+
+        .caption-item p {
+            font-size: 0.95rem;
+            color: #475569;
+            text-align: justify;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- 手机端适配 --- */
+        @media (max-width: 768px) {
+            .mixed-layout {
+                flex-direction: column; /* 变为单列 */
+            }
+            .layout-col-left {
+                flex: none;
+                width: 100%;
+            }
+            .caption-row {
+                flex-direction: column; /* 文字也变为上下排列 */
+                gap: 20px;
+            }
+            .img-wrapper-vertical {
+                height: auto;       /* 手机上高度自适应 */
+            }
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            text-align: left;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3::before {
+            content: ''; display: block; width: 6px; height: 24px; background: var(--primary-color); border-radius: 2px;
+        }
+
+        .subsection-description {
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .subsection-divider {
+            border: 0; height: 1px; background: #cbd5e1; margin: 60px 0; opacity: 0.5;
+        }
+
+        .abstract-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: justify;
+            font-size: 1.05rem;
+            color: #475569;
+        }
+
+        /* --- Scrolling Window Logic (Comparisons) --- */
+        .comparison-block {
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: relative; /* Needed for absolute positioning of the button */
+        }
+
+        .instruction-label { text-align: center; margin-bottom: 20px; padding-right: 40px; padding-left: 40px; }
+        .instruction-badge {
+            background: #eff6ff; color: var(--primary-color); padding: 8px 24px;
+            border-radius: 50px; font-weight: 600; font-size: 1rem;
+            display: inline-block; border: 1px solid #dbeafe;
+        }
+
+        .scroll-window {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            width: 100%;
+        }
+        .scroll-window::-webkit-scrollbar { height: 8px; }
+        .scroll-window::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .scroll-window::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        .video-card {
+            flex: 0 0 auto; width: 220px; display: flex; flex-direction: column;
+        }
+        .video-card.ref-card { width: 180px; }
+        
+        .video-card video, .video-card img {
+            width: 100%; border-radius: 8px; display: block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); background: #000;
+        }
+        .video-card img { height: auto; aspect-ratio: 16/9; object-fit: cover; }
+        .video-card img.ref-portrait {
+            width: auto;
+            max-width: 100%;
+            height: 220px;
+            background: #fff;
+            object-fit: contain;
+        }
+
+        .card-header {
+            text-align: center; font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 8px; white-space: nowrap;
+        }
+        .is-ours .card-header { color: var(--ours-color); font-weight: 800; }
+        .is-ours video { border: 3px solid var(--ours-color); box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2); }
+
+        /* --- More Results Grid Logic --- */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Strict two columns */
+            gap: 30px;
+        }
+
+        .showcase-item {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: relative; /* Needed for absolute positioning of the button */
+        }
+
+        .compare-duo {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 15px;
+            align-items: end; /* Bottom alignment */
+        }
+
+        .showcase-item video, .showcase-item img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        /* --- Video Control Button Styling --- */
+        .video-control-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .video-control-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .showcase-grid { grid-template-columns: 1fr; }
+            .video-card { width: 200px; }
+            .video-control-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>VIVA: VLM-Guided Instruction-Based Video Editing with<br>Reward Optimization</h1>
+            
+            <div class="authors">
+                <a href="#">Xiaoyan Cong</a><sup>1,2</sup>, 
+                <a href="#">Haotian Yang</a><sup>2,*</sup>, 
+                <a href="#">Angtian Wang</a><sup>2</sup>,
+                <a href="#">Yizhi Wang</a><sup>2</sup>,
+                <a href="#">Yiding Yang</a><sup>2</sup>,
+                <a href="#">Canyu Zhang</a><sup>2</sup>,
+                <a href="#">Chongyang Ma</a><sup>2</sup>
+            </div>
+
+            <div class="affiliations">
+                <sup>1</sup>Brown University<br>
+                <sup>2</sup>Bytedance, Intelligent Creation
+            </div>
+
+            <div class="correspondence">
+                <sup>*</sup> Project Lead
+            </div>
+
+            </div>
+    </header>
+
+    <section id="abstract">
+        <div class="container">
+            <h2>Abstract</h2>
+            <div class="abstract-content">
+                <p>
+                    Instruction-based video editing aims to modify an input video according to a natural-language instruction while preserving content fidelity and temporal coherence. However, existing diffusion-based approaches are often trained on paired data of simple editing operations, which fundamentally limits their ability to generalize to diverse and complex, real-world instructions. To address this generalization gap, we propose <b>VIVA</b>, a scalable framework for instruction-based video editing that leverages VLM-guided encoding and reward optimization. First, we introduce a VLM-based instructor that encodes the textual instruction, the first frame of the source video, and an optional reference image into visually-grounded instruction representations, providing fine-grained spatial and semantic context for the diffusion transformer backbone. Second, we propose a post-training stage, Edit-GRPO, which adapts Group Relative Policy Optimization to the domain of video editing, directly optimizing the model for instruction-faithful, content-preserving, and aesthetically pleasing edits using relative rewards. Furthermore, we propose a data construction pipeline designed to synthetically generate diverse, high-fidelity paired video–instruction data of basic editing operations. Extensive experiments show that VIVA achieves superior instruction following, generalization, and editing quality over state-of-the-art methods.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="method">
+        <div class="container">
+            <h2>Method</h2>
+            
+            <div class="mixed-layout">
+                
+                <div class="layout-col-left">
+                    <div class="img-wrapper-vertical">
+                        <img src="assets/editgrpo.png" alt="Edit-GRPO Diagram">
+                    </div>
+                </div>
+
+                <div class="layout-col-right">
+                    
+                    <div class="img-wrapper-horizontal">
+                        <img src="assets/method.png" alt="Method Framework">
+                    </div>
+
+                    <div class="caption-row">
+                        
+                        <div class="caption-item">
+                            <h3>Method Overview</h3>
+                            <p>
+                                A context-aware VLM instructor encodes the system prompt, instruction, first frame of the source video, and an optional reference image into VLM tokens.
+                                A trainable token refiner aligns these tokens to the pretrained DiT latent space. 
+                                The VAE encodings of the source video are added to form context-aware noise tokens for denoising.
+                            </p>
+                        </div>
+
+                        <div class="caption-item">
+                            <h3>Edit-GRPO</h3>
+                            <p>
+                                We inject stochasticity via Flow-SDE to generate diverse samples, score them with our reward system, and compute a GRPO loss from the resulting relative advantages to update the model. For efficiency, we optimize a LoRA instead of full fine-tuning.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="comparisons">
+        <div class="container">
+            <h2 style="margin-bottom: 60px;">Comparison with Baselines</h2>
+
+            <div class="subsection">
+                <h3>Instruction-based Video Editing</h3>
+                <p class="subsection-description">
+                    Please scroll right to view all baselines.<br>
+                    Please press the play button on the top right to pause all videos for more detailed frame-by-frame comparison.<br>
+                    Please refresh the page if the videos are not synchronized properly.
+                </p>
+
+                
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Remove the cigarette from his hand, and add a pair of sunglasses to the man."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/079/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/079/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/079/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/079/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/079/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/079/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/079/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Remove the boy."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/073/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/073/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/073/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/073/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/073/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/073/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/073/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Add an Asian man wearing a white T-shirt Sitting in the driver's seat of a vintage car."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/053/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/053/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/053/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/053/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/053/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/053/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/053/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Change the weather to a torrential downpour."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/033/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/033/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/033/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/033/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/033/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/033/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/033/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Turn the sky to lightning and thunder, and add a little cat running in the grass."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/117/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/117/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/117/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/117/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/117/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/117/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/117/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Add a white dog beside the woman."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/064/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/064/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/064/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/064/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/064/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/064/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/064/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Remove the bowl in the middle."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/083/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/083/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/083/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/083/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/083/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/083/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/083/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Add an combat aircraft to the blue sky."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/063/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/063/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/063/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/063/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/063/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/063/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/063/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Turn the entire scene into autumn."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/105/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/105/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/105/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/105/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/105/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/105/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/105/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Change the material of the train to that made of ice cubes."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/034/src.mp4"></video>
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins/034/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins/034/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins/034/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins/034/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins/034/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins/034/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="subsection-divider">
+
+            <div class="subsection">
+                <h3>Instruction-Reference-based Video Editing</h3>
+                <p class="subsection-description">
+                    Please scroll right to view all baselines.<br>
+                    Please press the play button on the top right to pause all videos for more detailed frame-by-frame comparison.<br>
+                    Please refresh the page if the videos are not synchronized properly.
+                </p>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Replace the background with Tokyo tower."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img class="ref-portrait" src="assets/comparison/ins_ref/134/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/134/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Add a yellow clock by the window."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/104/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/104/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Replace the person with the ultraman."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/137/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/137/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Replace the upper-clothes with white T-shirt."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/108/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/108/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Add a brown teddy bear to the man's right shoulder."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/103/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/103/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Replace the black backpack with wine red backpack."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/138/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/138/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+                <div class="comparison-block">
+                    <div class="instruction-label">
+                        <span class="instruction-badge">Instruction: "Replace the car with a toy car."</span>
+                    </div>
+                    <div class="scroll-window">
+                        <div class="video-card">
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/src.mp4"></video>
+                        </div>
+                        <div class="video-card ref-card">
+                            <div class="card-header">Reference Image</div>
+                            <img src="assets/comparison/ins_ref/130/ref_image.jpg" alt="Ref">
+                        </div>
+                        <div class="video-card is-ours">
+                            <div class="card-header">VIVA (Ours)</div>
+                            <video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/ours.mp4"></video>
+                        </div>
+                        <div class="video-card"><div class="card-header">Runway Aleph</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/Runway.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Lucy-Edit-Dev</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/Lucy_Edit_Dev.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">Ditto</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/Ditto.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">ICVE</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/ICVE.mp4"></video></div>
+                        <div class="video-card"><div class="card-header">InsV2V</div><video autoplay loop muted playsinline src="assets/comparison/ins_ref/130/InsV2V.mp4"></video></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <section id="more-results">
+        <div class="container">
+            <h2 style="margin-bottom: 40px;">More Challenging Cases</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 40px;">
+                More qualitative results on complex instructions that are non-trivial and challenging to be synthesized by the data construction pipeline.
+            </p>
+
+            <div class="showcase-grid">
+                
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background from the ocean to a vast, snowy mountain range."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/005/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/005/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add a trail of fire coming from the back wheel of the bike."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/007/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/007/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add a pair of large, white, feathered wings to the woman's back, and change woman's hair to red."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/026/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/026/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the material of the large dome in the background to be made of polished gold, and turn the sky to lightning and thunder."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/033/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/033/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the material of the cello to look as if it's carved from a single block of clear ice, and add audience members in the background."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/024/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/024/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Replace the water in the canal with flowing lava, and add a full head of black hair."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/009/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/009/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Replace the ice cream cone she is holding with a flaming torch."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/015/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/015/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Replace the dumbbells they are holding with flaming torches."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/012/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/012/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add a large, ethereal planet with glowing rings hanging in the night sky."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/013/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/013/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background to a night sky filled with colorful fireworks."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/031/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/031/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Make the mountain in the background an active volcano erupting with smoke and lava, and add a little cat running by the couple."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/034/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/034/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Replace the sky with a swirling, colorful galaxy nebula, and add a panda walking around."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/021/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/021/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add steam rising from the food in the bowl."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/003/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/003/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background to a bustling, neon-lit street in Tokyo at night."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/030/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/030/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background to a vibrant sunset over the ocean."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/019/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/019/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Transform the scene to nighttime, with a full moon reflecting on the water."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/027/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/027/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add several large, floating islands with waterfalls cascading down from them in the sky."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/022/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/022/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Turn the dirt ground into a rippling water surface."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/020/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/020/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Turn the cobblestone ground into a flowing river."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/035/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/035/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Add a dolphin leaping from the water in the background."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/032/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/032/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Turn the asphalt road into a vibrant, rainbow-colored path."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/016/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/016/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the water into a moving sea of clouds."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/017/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/017/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background to a magical, glowing mushroom forest."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/011/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/011/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the background from a beach to a crowded street in London."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/004/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/004/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the brick wall into a large aquarium filled with colorful fish."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/006/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/006/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Change the waterfall into lava."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/071/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/071/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Transform into illustration style."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/095/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/095/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Transform into Chinese ink style."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/096/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/096/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Transform the entire scene into oil painting style."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/099/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/099/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Turn into folded-paper origami art style."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/102/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/102/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Remove the watermark."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/000/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/000/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Remove the watermark."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/001/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/001/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Remove the watermark."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/002/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/002/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div style="margin-bottom: 10px; font-weight: 600; text-align: center;">"Remove the watermark."</div>
+                    <div class="compare-duo">
+                        <div>
+                            <div class="card-header">Source Video</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/003/src.mp4"></video>
+                        </div>
+                        <div class="is-ours">
+                            <div class="card-header">VIVA</div>
+                            <video autoplay loop muted playsinline src="assets/our_results/watermark/003/ours.mp4"></video>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 60px 0;"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Find all container blocks that have videos
+            const comparisonBlocks = document.querySelectorAll('.comparison-block');
+            const showcaseItems = document.querySelectorAll('.showcase-item');
+            
+            // Helper function to toggle all videos on the page
+            let isGlobalPlaying = true; // default state
+
+            function toggleGlobalPlayback(buttonClicked) {
+                const allVideos = document.querySelectorAll('video');
+                const allButtons = document.querySelectorAll('.video-control-btn');
+                
+                // Toggle state
+                isGlobalPlaying = !isGlobalPlaying;
+
+                // Perform action on all videos
+                allVideos.forEach(video => {
+                    if (isGlobalPlaying) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+
+                // Update icons on all buttons to reflect the new state
+                allButtons.forEach(btn => {
+                    const icon = btn.querySelector('i');
+                    if (isGlobalPlaying) {
+                        icon.classList.remove('fa-play');
+                        icon.classList.add('fa-pause');
+                    } else {
+                        icon.classList.remove('fa-pause');
+                        icon.classList.add('fa-play');
+                    }
+                });
+            }
+
+            // 2. Inject buttons into these blocks
+            const containers = [...comparisonBlocks, ...showcaseItems];
+
+            containers.forEach(container => {
+                // Create button element
+                const btn = document.createElement('button');
+                btn.className = 'video-control-btn';
+                btn.title = 'Play/Pause All Videos';
+                
+                // Add icon (Pause by default as videos autoplay)
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-pause';
+                btn.appendChild(icon);
+
+                // Add click event
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling if needed
+                    toggleGlobalPlayback(btn);
+                });
+
+                // Append to container
+                container.appendChild(btn);
+            });
+        });
+    </script>
+</body>
+</html>
